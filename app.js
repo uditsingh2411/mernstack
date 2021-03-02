@@ -1,42 +1,46 @@
-const http = require('http');
 const express = require('express');
+const env = require('dotenv');
 const app = express();
 const nodemon = require('nodemon');
+//const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-require('dotenv/config');
+const { Mongoose } = require('mongoose');
 
-//MIDDLEWARES
-//app.use('/api',()=>{
-  //  console.log('this is middleware running')
-//})
 
-//ROUTES
-app.get('/',(req,res)=>{
-    res.send('we are on home')
+//environment variable or constant
+env.config();
+
+//mongodb connection
+//Mongoose.connect(
+//  `mongodb+srv://root:${process.env.MONGO_DB_PASSWORD}@cluster0.wvlt3.mongodb.net/${MONGO_DB_DBNAME}?retryWrites=true&w=majority`)
+mongoose.connect(
+    `mongodb+srv://goeasy:goeasy123@cluster0.edmhw.mongodb.net/goeasy?retryWrites=true&w=majority`,
+    {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true
+    }
+
+).then(() => {
+    console.log('db connected');
 });
 
-app.get('/api',(req,res)=>{
-    res.send('we are on home api')
+app.use(express.json());
+
+
+
+ app.get('/',(req,res,next)=>{
+      res.status(200).json({
+          message:'hello from the server'
+      });
+  }); 
+
+  app.post('/data',(req,res,next)=>{
+      res.status(200).json({
+          message: req.body
+      });
+
+
+app.listen(process.env.PORT, () => {
+    console.log(`server is running on the port ${process.env.PORT}`);
 });
-
-//app.delete('/',(req,res)=>{
-  //  res.send('we are on home')
-//});
-
-//app.patch('/',(req,res)=>{
-  //  res.send('we are on home')
-//});
-
-//connect to DB
-
-mongoose.connect('mongodb+srv://root:merebhai@cluster0.wvlt3.mongodb.net/ecommerce?retryWrites=true&w=majority', {useNewUrlParser: true },()=>{
-    console.log('DB CONNECTED') 
-    
-})
-
-
-
-
-//HOW WE START LISTENING TO THE SERVER
-app.listen(4000);
-    
